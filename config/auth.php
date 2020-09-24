@@ -1,5 +1,7 @@
 <?php
 
+use App\User;
+
 return [
 
     /*
@@ -36,11 +38,16 @@ return [
     */
 
     'guards' => [
-        'web' => [
-            'driver' => 'session',
-            'provider' => 'users',
-        ],
+        // 'web' => [
+        //     'driver' => 'session',
+        //     'provider' => 'users',
+        // ],
 
+        'web' => [
+            'driver' => 'jwt',
+            'provider' => 'users',
+            'hash' => false,
+        ],
         'api' => [
             'driver' => 'jwt',
             'provider' => 'users',
@@ -68,7 +75,8 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\Laravue\Models\User::class,
+            'model' => App\User::class,
+            // 'model' => App\Laravue\Models\User::class,
         ],
 
         // 'users' => [
