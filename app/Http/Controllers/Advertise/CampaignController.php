@@ -279,6 +279,7 @@ class CampaignController extends Controller
         }
 
         $campaign_id_query = clone $campaign_base_query;
+        
         $campaign_id_query->select('id');
         $advertise_kpi_query = AdvertiseKpi::multiTableQuery(function ($query) use ($start_date, $end_date, $campaign_id_query) {
             $query->whereBetween('date', [$start_date, $end_date])
@@ -316,30 +317,23 @@ class CampaignController extends Controller
             ->toArray();
         $order_by_ids = implode(',', array_reverse(array_keys($advertise_kpi_list)));
         $campaign_query = clone $campaign_base_query;
-        $campaign_query->with('app');
+        $campaign_query->with('app:id,name');
         if (!empty($order_by_ids)) {
             $campaign_query->orderByRaw(DB::raw("FIELD(id,{$order_by_ids}) desc"));
         }
         if ($order_by[0] && $order_by[0] !== 'kpi') {
             $campaign_query->orderBy($order_by[0], $order_sort);
         }
+        
         $campaign_list = $campaign_query
             ->orderBy('id', 'desc')
             ->paginate($request->get('limit', 30))
             ->toArray();
 
         foreach ($campaign_list['data'] as &$campaign) {
-            if (isset($advertise_kpi_list[$campaign['id']])) {
-                $campaign['kpi'] = $advertise_kpi_list[$campaign['id']];
-            }
+                $campaign['kpi'] = $advertise_kpi_list[$campaign['id']] ?? null;
         }
-        $data = [
-            'code' => 0,
-            'msg'   => '正在请求中...',
-            'count' => $campaign_list['total'],
-            'data'  => $campaign_list['data']
-        ];
-        return response()->json($data);
+        return $this->success($campaign_list);
     }
 
 
@@ -421,16 +415,6 @@ class CampaignController extends Controller
             'data'  => $campaign_list
         ];
         return response()->json($data);
-    }
-    /** 
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
     }
 
     /**

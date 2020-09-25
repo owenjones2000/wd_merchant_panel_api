@@ -26,6 +26,7 @@
         "league/flysystem-aws-s3-v3": "^1.0",
         "spatie/laravel-permission": "^3.0",
         "fruitcake/laravel-cors": "^2.0",
+        "dcat/easy-excel": "^1.0",
         "tymon/jwt-auth": "^1.0"
     },
     "require-dev": {

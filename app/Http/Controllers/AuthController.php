@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File AuthController.php
  *
@@ -6,6 +7,7 @@
  * @package Laravue
  * @version 1.0
  */
+
 namespace App\Http\Controllers;
 
 use App\Laravue\JsonResponse;
@@ -29,7 +31,13 @@ class AuthController extends Controller
     {
         $credentials = $request->only('email', 'password');
         if ($token = $this->guard()->attempt($credentials)) {
-            return response()->json(new UserResource(Auth::user()), Response::HTTP_OK)->header('Authorization', $token);
+            return response()->json(
+                [
+                    'code' => 0,
+                    'data' => new UserResource(Auth::user())
+                ],
+                Response::HTTP_OK
+            )->header('Authorization', $token);
         }
 
         return response()->json(new JsonResponse([], 'login_error'), Response::HTTP_UNAUTHORIZED);
