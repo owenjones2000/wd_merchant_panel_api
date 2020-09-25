@@ -32,16 +32,9 @@ class AppController extends Controller
         }
         $res = $app_query->orderBy($request->get('field','status'),$request->get('order','desc'))
             ->orderBy('name','asc')
-            ->paginate($request->get('limit',30))
-            ->toArray();
+            ->paginate($request->get('limit',30));
 
-        $data = [
-            'code' => 0,
-            'msg'   => '正在请求中...',
-            'count' => $res['total'],
-            'data'  => $res['data']
-        ];
-        return response()->json($data);
+        return $this->success($res);
     }
 
     /**
@@ -104,7 +97,7 @@ class AppController extends Controller
             $params = $request->all();
             if($request->input('os') == 'ios'){
                 if (strlen($request->input('app_id')) > 10 || strlen($request->input('app_id')) < 8){
-                    return back()->withInput()->withErrors(['app_id is wrong']);
+                    return $this->fail(1001, [], 'app_id is wrong');
                 }else{
                     $params['app_id'] = 'id'.$params['app_id'];
                 }
@@ -112,9 +105,9 @@ class AppController extends Controller
             }
             $params['id'] = $id;
             App::Make(Auth::user(), $params);
-            return redirect(route('advertise.app.edit', [$id]))->with(['status'=>'Update successfully']);
-        } catch(BizException $ex){
-            return redirect(route('advertise.app.edit', [$id]))->withErrors(['status'=>$ex->getMessage()]);
+            return $this->success();
+        } catch(\Exception $ex){
+            return $this->fail(1001, [], $ex->getMessage());
         }
     }
 
@@ -167,10 +160,10 @@ class AppController extends Controller
         /** @var App $app */
         $app = App::findOrFail($id);
         if ($app->is_admin_disable == 1 || $app->is_remove == 1){
-            return response()->json(['code' => 100, 'msg' => 'Under review by administrator,please contact the administrator']);
+            return $this->fail(100, [], 'Under review by administrator,please contact the administrator');
         }else {
             $app->enable();
-            return response()->json(['code' => 0, 'msg' => 'Successful']);
+            return $this->success();
         }
     }
 
@@ -185,7 +178,7 @@ class AppController extends Controller
         /** @var App $app */
         $app = App::findOrFail($id);
         $app->disable();
-        return response()->json(['code'=>0,'msg'=>'Successful']);
+        return $this->success();
     }
 
     /**

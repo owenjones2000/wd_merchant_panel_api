@@ -42,7 +42,6 @@ Route::group(['middleware' => 'api'], function () {
         //切换广告主
         Route::post('user/change', 'UserController@changeMainUser')->name('home.user.change');
         //个人信息编辑
-        Route::get('user/edit', 'UserController@edit')->name('home.user.edit');
         Route::post('user/update', 'UserController@update')->name('home.user.update');
     });
 
@@ -55,8 +54,6 @@ Route::group(['middleware' => 'api'], function () {
             Route::get('list', 'AppController@index')->name('advertise.app');
 
             //编辑
-            Route::get('{id?}', 'AppController@edit')->name('advertise.app.edit')->middleware('permission:advertise.app')
-            ->where('id', '\d+');
             Route::post('{id?}', 'AppController@save')->name('advertise.app.save')->middleware('permission:advertise.app.edit')
             ->where('id', '\d+');
             Route::post('{id}/enable', 'AppController@enable')->name('advertise.app.enable')->middleware('permission:advertise.app.edit');
@@ -65,10 +62,6 @@ Route::group(['middleware' => 'api'], function () {
 
             Route::post('{app_id}/channel/{channel_id}/enable', 'ChannelController@enable')->name('advertise.campaign.channel.enable')->middleware('permission:advertise.campaign.edit');
             Route::post('{app_id}/channel/{channel_id}/disable', 'ChannelController@disable')->name('advertise.campaign.channel.disable')->middleware('permission:advertise.campaign.edit');
-
-            Route::group(['prefix' => '{app_id}/campaign', 'middleware' => 'permission:advertise.campaign'], function () {
-                Route::get('list', 'CampaignController@appBelonglist')->name('advertise.campaign');
-            });
 
             //删除
             //        Route::delete('destroy', 'AppController@destroy')->name('advertise.app.destroy')->middleware('permission:advertise.app.destroy');
