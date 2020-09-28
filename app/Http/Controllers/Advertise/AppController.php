@@ -71,6 +71,15 @@ class AppController extends Controller
         return view('advertise.app.edit',compact('apps', 'tags', 'apptags'));
     }
 
+    public function tags()
+    {
+        $tags = AppTag::where('status', 1)->select([
+            'id',
+            'name'
+        ])
+        ->get();
+        return $this->success($tags);
+    }
     /**
      * Update the specified resource in storage.
      *

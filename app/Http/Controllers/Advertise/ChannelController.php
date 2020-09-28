@@ -90,21 +90,14 @@ class ChannelController extends Controller
 
         $advertise_kpi_list = $advertise_kpi_query
             ->with('channel:id,name_hash')
-            ->with(['app:id,name', 'campaign.disableChannels'])
+            ->with(['campaign.disableChannels'])
             ->orderBy('spend', 'desc')
             ->paginate($request->get('limit', 30));
         foreach ($advertise_kpi_list as $advertise_kpi) {
             $advertise_kpi['status'] = !$advertise_kpi['campaign']['disableChannels']->contains($advertise_kpi['target_app_id']);
         }
 
-        $advertise_kpi_list = $advertise_kpi_list->toArray();
-        $data = [
-            'code' => 0,
-            'msg'   => '正在请求中...',
-            'count' => $advertise_kpi_list['total'],
-            'data'  => $advertise_kpi_list['data']
-        ];
-        return response()->json($data);
+        return $this->success($advertise_kpi_list);
     }
 
     /**
@@ -120,7 +113,7 @@ class ChannelController extends Controller
         /** @var Campaign $campaign */
         $campaign  = Campaign::findOrFail($campaign_id);
         $campaign->disableChannels()->detach($channel_id);
-        return response()->json(['code' => 0, 'msg' => 'Successful']);
+        return $this->success();
     }
 
     /**
@@ -136,6 +129,6 @@ class ChannelController extends Controller
         /** @var Campaign $campaign */
         $campaign  = Campaign::findOrFail($campaign_id);
         $campaign->disableChannels()->attach($channel_id);
-        return response()->json(['code' => 0, 'msg' => 'Successful']);
+        return $this->success();
     }
 }
