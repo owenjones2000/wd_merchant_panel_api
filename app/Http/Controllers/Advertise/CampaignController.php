@@ -199,13 +199,7 @@ class CampaignController extends Controller
             $kpi['ctr'] = $kpi['ctr'] . '%';
             $kpi['cvr'] = $kpi['cvr'] . '%';
         }
-        $data = [
-            'code' => 0,
-            'msg'   => '正在请求中...',
-            'count' => $advertise_kpi_list['total'],
-            'data'  => $advertise_kpi_list['data']
-        ];
-        return response()->json($data);
+        return $this->success($advertise_kpi_list);
     }
     public function performanceExport(Request $request)
     {

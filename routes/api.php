@@ -79,7 +79,6 @@ Route::group(['middleware' => 'api'], function () {
             Route::get('states', 'CampaignController@states')->name('advertise.campaign.states');
 
             Route::get('list', 'CampaignController@list')->name('advertise.campaign');
-            Route::get('performance', 'CampaignController@performance')->name('advertise.campaign.performance');
             Route::get('performance-export', 'CampaignController@performanceExport')->name('advertise.campaign.export');
             Route::get('performance-data', 'CampaignController@performanceData')->name('advertise.campaign.performance-data');
            
@@ -90,13 +89,11 @@ Route::group(['middleware' => 'api'], function () {
             Route::post('{id}/disable', 'CampaignController@disable')->name('advertise.campaign.disable')->middleware('permission:advertise.campaign.edit');
             //删除
             //        Route::delete('destroy', 'CampaignController@destroy')->name('advertise.campaign.destroy')->middleware('permission:advertise.campaign.destroy');
-
+            Route::get('ad/tag', 'AdController@tags')->name('advertise.ad.tag');
             // 广告
             Route::group(['prefix' => '{campaign_id}/ad', 'middleware' => 'permission:advertise.campaign.ad'], function () {
                 Route::get('data', 'AdController@data')->name('advertise.campaign.ad.data');
-                Route::get('list', 'AdController@list')->name('advertise.campaign.ad');
                 //编辑
-                Route::get('{id?}', 'AdController@edit')->name('advertise.campaign.ad.edit')->middleware('permission:advertise.campaign.ad');
                 Route::post('{id?}', 'AdController@save')->name('advertise.campaign.ad.save')->middleware('permission:advertise.campaign.ad.edit');
                 Route::post('{id}/enable', 'AdController@enable')->name('advertise.ad.enable')->middleware('permission:advertise.campaign.ad.edit');
                 Route::post('{id}/disable', 'AdController@disable')->name('advertise.ad.disable')->middleware('permission:advertise.campaign.ad.edit');
@@ -109,7 +106,6 @@ Route::group(['middleware' => 'api'], function () {
             // 子渠道
             Route::group(['prefix' => '{campaign_id}/channel', 'middleware' => 'permission:advertise.campaign'], function () {
                 Route::get('data', 'ChannelController@data')->name('advertise.campaign.channel.data');
-                Route::get('list', 'ChannelController@list')->name('advertise.campaign.channel');
                 Route::post('{channel_id}/enable', 'ChannelController@enable')->name('advertise.campaign.channel.v2.enable');
                 Route::post('{channel_id}/disable', 'ChannelController@disable')->name('advertise.campaign.channel.v2.disable');
             });
@@ -118,8 +114,6 @@ Route::group(['middleware' => 'api'], function () {
             Route::group(['prefix' => '{campaign_id}/region', 'middleware' => 'permission:advertise.campaign'], function () {
                 Route::get('data', 'RegionController@data')->name('advertise.campaign.region.data');
                 Route::get('channle/data', 'RegionController@channelData')->name('advertise.campaign.region.channel.data')->middleware('permission:advertise.campaign.optimization');
-                Route::get('list', 'RegionController@list')->name('advertise.campaign.region');
-                Route::get('channel/list', 'RegionController@channelList')->name('advertise.campaign.region.channel')->middleware('permission:advertise.campaign.optimization');;
                 Route::post('channel', 'RegionController@channelBid')->name('advertise.campaign.region.channel.bid')->middleware('permission:advertise.campaign.optimization');;
                 Route::post('channel/reset', 'RegionController@channelResetBid')->name('advertise.campaign.region.channel.bid.reset')->middleware('permission:advertise.campaign.optimization');
             });
@@ -145,9 +139,7 @@ Route::group(['middleware' => 'api'], function () {
         // 应用管理
         Route::group(['prefix' => 'app', 'middleware' => 'permission:publish.app'], function () {
             Route::get('data', 'AppController@data')->name('publish.app.data');
-            Route::get('list', 'AppController@list')->name('publish.app');
             Route::get('listdata', 'AppController@listdata')->name('publish.app.listdata');
-            Route::get('performance', 'AppController@performance')->name('publish.app.performance');
 
             Route::get('dashboard', 'AppController@dashboard')->name('publish.app.dashboard')->middleware('permission:publish.app.dashboard');
             //编辑

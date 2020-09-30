@@ -12,27 +12,14 @@ use App\Http\Controllers\Controller;
 use App\Models\Advertise\Impression;
 use App\Models\Advertise\Region;
 use App\Models\ChannelCpm;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class AppController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function performance()
-    {
-        $regions = Region::query()->orderBy('sort', 'desc')->get();
-        return view('publish.app.performance', compact('regions'));
-    }
 
-    public function list()
-    {
-        return view('publish.app.list');
-    }
     public function listdata(Request $request)
     {
         $channel_base_query = Channel::query()->where('main_user_id', Auth::user()->getMainId());
@@ -44,14 +31,8 @@ class AppController extends Controller
             $platform  = $request->get('platform');
             $channel_base_query->where('platform', $platform);
         }
-        $channel_list = $channel_base_query->paginate($request->get('limit', 30))->toArray();;
-        $data = [
-            'code' => 0,
-            'msg'   => '正在请求中...',
-            'count' => $channel_list['total'],
-            'data'  => $channel_list['data']
-        ];
-        return response()->json($data);
+        $channel_list = $channel_base_query->paginate($request->get('limit', 30));
+        return $this->success($channel_list);
     }
     public function data(Request $request)
     {
@@ -193,13 +174,7 @@ class AppController extends Controller
             // }
         }
 
-        $data = [
-            'code' => 0,
-            'msg'   => '正在请求中...',
-            'count' => $advertise_kpi_list['total'],
-            'data'  => $advertise_kpi_list['data']
-        ];
-        return response()->json($data);
+        return $this->success($advertise_kpi_list);
     }
     public function dashboard()
     {

@@ -182,7 +182,7 @@ class Campaign extends Model
                 $ad->regions()->syncWithoutDetaching(['ALL']);
             }
 
-            if (isset($params['asset'])) {
+            if (isset($params['asset']) && $params['asset']) {
                 $asset_id_list = array_column($params['asset'], 'type', 'id');
                 $ad->assets()
                     ->where(function ($query) use ($ad, $asset_id_list) {
@@ -368,6 +368,10 @@ class Campaign extends Model
     protected static function boot()
     {
         parent::boot();
-        static::addGlobalScope(new TenantScope(Auth::user()->getMainId()));
+        /**
+         * @var User
+         */
+        $user = Auth::user();
+        static::addGlobalScope(new TenantScope($user->getMainId()));
     }
 }

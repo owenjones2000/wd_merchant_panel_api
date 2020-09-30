@@ -16,24 +16,6 @@ use Illuminate\Support\Facades\DB;
 
 class RegionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function channelList(Request $request, $campaign_id)
-    {
-        $rangedate = $request->input('rangedate', date('Y-m-d ~ Y-m-d'));
-        $campaign = Campaign::findOrFail($campaign_id);
-        $country = $request->input('country', '');
-        return view('advertise.campaign.region.channellist', compact('campaign', 'rangedate', 'country'));
-    }
-    public function list(Request $request, $campaign_id)
-    {
-        $rangedate = $request->input('rangedate', date('Y-m-d ~ Y-m-d'));
-        $campaign = Campaign::findOrFail($campaign_id);
-        return view('advertise.campaign.region.list', compact('campaign', 'rangedate'));
-    }
 
     public function data(Request $request, $campaign_id)
     {
@@ -82,14 +64,7 @@ class RegionController extends Controller
             ->orderBy('spend', 'desc')
             ->paginate($request->get('limit', 30))
             ->toArray();
-
-        $data = [
-            'code' => 0,
-            'msg'   => '正在请求中...',
-            'count' => $advertise_kpi_list['total'],
-            'data'  => $advertise_kpi_list['data']
-        ];
-        return response()->json($data);
+        return $this->success($advertise_kpi_list);
     }
 
     public function channelData(Request $request, $campaign_id)
@@ -154,43 +129,43 @@ class RegionController extends Controller
         }
 
         $advertise_kpi_list = $advertise_kpi_list->toArray();
-        $data = [
-            'code' => 0,
-            'msg'   => '正在请求中...',
-            'count' => $advertise_kpi_list['total'],
-            'data'  => $advertise_kpi_list['data']
-        ];
-        return response()->json($data);
+        return $this->success($advertise_kpi_list);
     }
 
-    public function channelBid(Request $request)
+    public function channelBid(Request $request, $campaign_id)
     {
         $this->validate($request, [
-            'bid' => 'bail|required|gte:0.01|numeric'
+            'bid' => 'bail|required|gte:0.01|numeric',
+            'country' => 'required',
+            'target_app_id' => 'required',
         ]);
         $data = $request->all();
         $res = ChannelBid::updateOrCreate([
-            'campaign_id' => $data['campaign_id'],
+            'campaign_id' => $campaign_id,
             'country' => $data['country'],
             'target_app_id' => $data['target_app_id'],
         ], [
             'bid' => $data['bid'],
         ]);
         if ($res){
-            return response()->json(['code' => 0]);
+            return $this->success();
         }
-        return response()->json(['code' => 100]);
+        return $this->fail(1003);
     }
 
     public function channelResetBid(Request $request, $campaign_id)
     {
+        $this->validate($request, [
+            'country' => 'required',
+            'target_app_id' => 'required',
+        ]);
         $res = ChannelBid::where('campaign_id', $campaign_id)
         ->where('target_app_id', $request->input('target_app_id'))
         ->where('country', $request->input('country'))
         ->delete();
         if ($res) {
-            return response()->json(['code' => 0, 'msg' => 'Successful']);
+            return $this->success();
         }
-        return response()->json(['code' => 100, 'msg' => 'Try Later']);
+        return $this->fail(1003);
     }
 }

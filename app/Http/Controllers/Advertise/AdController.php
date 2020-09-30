@@ -15,17 +15,6 @@ use Illuminate\Support\Facades\DB;
 
 class AdController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function list(Request $request, $campaign_id)
-    {
-        $rangedate = $request->input('rangedate', date('Y-m-d ~ Y-m-d'));
-        $campaign = Campaign::findOrFail($campaign_id);
-        return view('advertise.campaign.ad.list', compact('campaign', 'rangedate'));
-    }
 
     public function data(Request $request, $campaign_id)
     {
@@ -73,7 +62,7 @@ class AdController extends Controller
             ->keyBy('ad_id')
             ->toArray();
         $order_by_ids = implode(',', array_reverse(array_keys($advertise_kpi_list)));
-        $ad_base_query->with('campaign.app');
+        // $ad_base_query->with('campaign:id,name,app_id');
         if(!empty($order_by_ids)){
             $ad_base_query->orderByRaw(DB::raw("FIELD(id,{$order_by_ids}) desc"));
         }
@@ -90,13 +79,7 @@ class AdController extends Controller
                 $ad['kpi'] = $advertise_kpi_list[$ad['id']];
             }
         }
-        $data = [
-            'code' => 0,
-            'msg'   => '正在请求中...',
-            'count' => $ad_list['total'],
-            'data'  => $ad_list['data']
-        ];
-        return response()->json($data);
+        return $this->success($ad_list);
     }
 
     /**
@@ -148,8 +131,8 @@ class AdController extends Controller
                 'unique:a_ad,name,'.$id.',id,campaign_id,'.$campaign_id,
                 new AdvertiseName()
             ],
-            'app_id' => 'exists:a_app,id',
-            'regions' => 'string',
+            // 'app_id' => 'exists:a_app,id',
+            // 'regions' => 'string',
             'asset' => 'array',
             'asset.*.id' => 'required|numeric',
             'asset.*.type' => 'required|numeric',
@@ -164,10 +147,19 @@ class AdController extends Controller
 //        $params['status'] = isset($params['status']) ? 1 : 0;
         $ad = $campaign->makeAd(Auth::user(), $params);
         if ($ad){
-            return redirect(route('advertise.campaign.ad.edit', [$ad['campaign_id'], $ad['id']]))
-                ->with(['status'=>'Save successfully.'.($ad['status'] ? '':' But ad is not running.')]);
+            return $this->success();
         }
-        return redirect(route('advertise.campaign.ad.edit', [$ad['campaign_id'], $ad['id']]))->withErrors(['status'=>'Error']);
+        return $this->fail(1004);
+    }
+
+    public function tags()
+    {
+        $tags = AdTag::where('status', 1)->select([
+            'id',
+            'name'
+        ])
+            ->get();
+        return $this->success($tags);
     }
 
     /**
@@ -182,9 +174,9 @@ class AdController extends Controller
             /** @var Ad $ad */
             $ad = Ad::query()->where(['id' => $id, 'campaign_id' => $campaign_id])->firstOrFail();
             $ad->enable();
-            return response()->json(['code'=>0,'msg'=>'Enabled']);
+            return $this->success();
         } catch (\Exception $ex) {
-            return response()->json(['code'=>-1,'msg'=>$ex->getMessage()]);
+            return $this->fail(1002, [], $ex->getMessage());
         }
 
     }
@@ -200,7 +192,7 @@ class AdController extends Controller
         /** @var Ad $ad */
         $ad = Ad::query()->where(['id' => $id, 'campaign_id' => $campaign_id])->firstOrFail();
         $ad->disable();
-        return response()->json(['code'=>0,'msg'=>'Disabled']);
+        return $this->success();
     }
 
     public function cloneAd(Request $request, $campaign_id, $id)
@@ -216,8 +208,7 @@ class AdController extends Controller
             $ad->cloneAd($campaignId); 
         }
 
-        return redirect(route('advertise.campaign.ad', [$ad['campaign_id']]))
-            ->with(['status' => 'successfully' ]);
+        return $this->success();
     }
 
     public function editClone($campaign_id, $id)
@@ -225,7 +216,7 @@ class AdController extends Controller
         $campaign = Campaign::where('id', $campaign_id)->firstOrFail();
         $campaigns = Campaign::where('app_id', $campaign->app_id)->get();
 
-        return view('advertise.campaign.ad.editClone', compact('campaign', 'campaigns', 'id'));
+        return $this->success($campaigns);
     }
     /**
      * Remove the specified resource from storage.
