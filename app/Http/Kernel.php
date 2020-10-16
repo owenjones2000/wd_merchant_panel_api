@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\RefreshTokenMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -67,6 +68,7 @@ class Kernel extends HttpKernel
 
         'operation.log' => \App\Http\Middleware\OperationLog::class,
         'product' => \App\Http\Middleware\Product::class,
+        'refresh' => RefreshTokenMiddleware::class,
     ];
 
     /**

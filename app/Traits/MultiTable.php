@@ -21,9 +21,15 @@ trait MultiTable{
         for ($index = $start->copy(); $index->format('Ymd') <= $end->format('Ymd'); $index->addDay()) {
             $table_name = "{$base_table_name}_{$index->format('Ymd')}";
             if(Schema::hasTable($table_name)){
-                $queries->push(
-                    $fun_build_query(DB::table($table_name))
-                );
+                if ($base_table_name == 'z_sub_tasks') {
+                    $queries->push(
+                        $fun_build_query(DB::table($table_name)->where('requests', '>', 0))
+                    );
+                } else {
+                    $queries->push(
+                        $fun_build_query(DB::table($table_name))
+                    );
+                }
             }else{
                 if(!$main_table_added){
                     $main_table_name = "z{$base_table_name}";

@@ -19,10 +19,15 @@ use Illuminate\Support\Facades\Route;
 // Route::middleware('auth:api')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
+Route::post('auth/login', 'AuthController@login');
+Route::group(['middleware' => [
+    'api',
+    'refresh',
+]], function () {
 
-Route::group(['middleware' => 'api'], function () {
-    Route::post('auth/login', 'AuthController@login');
-    Route::group(['middleware' => 'auth:api'], function () {
+    Route::group(['middleware' => [
+        'auth:api',
+    ]], function () {
         Route::get('auth/user', 'AuthController@user');
         Route::post('auth/logout', 'AuthController@logout');
     });
@@ -81,7 +86,7 @@ Route::group(['middleware' => 'api'], function () {
             Route::get('list', 'CampaignController@list')->name('advertise.campaign');
             Route::get('performance-export', 'CampaignController@performanceExport')->name('advertise.campaign.export');
             Route::get('performance-data', 'CampaignController@performanceData')->name('advertise.campaign.performance-data');
-           
+
             //编辑
             Route::post('', 'CampaignController@save')->name('advertise.campaign.save')->middleware('permission:advertise.campaign.edit');
             Route::post('{id}', 'CampaignController@update')->name('advertise.campaign.update')->middleware('permission:advertise.campaign.edit');
@@ -131,7 +136,8 @@ Route::group(['middleware' => 'api'], function () {
         'middleware' => [
             'auth:api',
             'operation.log',
-            'permission:publish.manage', 'product:publish'
+            'permission:publish.manage',
+            'product:publish'
         ]
     ], function () {
         Route::get('dashboard-data', 'AppController@dashboardData')->name('publish.app.dashboard.data')->middleware('permission:publish.app.dashboard');
@@ -170,5 +176,4 @@ Route::group(['middleware' => 'api'], function () {
     Route::apiResource('roles', 'RoleController')->middleware('permission:' . \App\Laravue\Acl::PERMISSION_PERMISSION_MANAGE);
     Route::get('roles/{role}/permissions', 'RoleController@permissions')->middleware('permission:' . \App\Laravue\Acl::PERMISSION_PERMISSION_MANAGE);
     Route::apiResource('permissions', 'PermissionController')->middleware('permission:' . \App\Laravue\Acl::PERMISSION_PERMISSION_MANAGE);
-
 });
