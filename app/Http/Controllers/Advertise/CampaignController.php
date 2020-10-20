@@ -84,7 +84,7 @@ class CampaignController extends Controller
             ->toArray();
         $order_by_ids = implode(',', array_reverse(array_keys($advertise_kpi_list)));
         $campaign_query = clone $campaign_base_query;
-        $campaign_query->with('app:id,name,is_audience');
+        $campaign_query->with('app:id,name,is_audience')->with('regions:id,code,name')->with('audience')->with('bids.region');
         if (!empty($order_by_ids)) {
             $campaign_query->orderByRaw(DB::raw("FIELD(id,{$order_by_ids}) desc"));
         }
@@ -313,7 +313,7 @@ class CampaignController extends Controller
         }
         $headings = array_reverse($headings);
         // dd($advertise_kpi_list);
-        Excel::export($advertise_kpi_list)->headings($headings)->download('wudiads_report_' . $request->get('rangedate') . '.csv');
+        return $this->success(['data' =>$advertise_kpi_list, 'headings' => $headings]);
     }
 
     public function apps()
