@@ -26,7 +26,9 @@
         "league/flysystem-aws-s3-v3": "^1.0",
         "spatie/laravel-permission": "^3.0",
         "fruitcake/laravel-cors": "^2.0",
+        "php-ffmpeg/php-ffmpeg": "^0.14.0",
         "dcat/easy-excel": "^1.0",
+        "tinify/tinify": "^1.5",
         "tymon/jwt-auth": "^1.0"
     },
     "require-dev": {
