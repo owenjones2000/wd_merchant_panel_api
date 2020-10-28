@@ -73,7 +73,7 @@ class AppController extends Controller
 
     public function tags()
     {
-        $tags = AppTag::where('status', 1)->select([
+        $tags = AppTag::where('status', 1)->where('group', '!=', 0)->select([
             'id',
             'name'
         ])
@@ -87,19 +87,51 @@ class AppController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function save(Request $request, $id = null)
+    public function save(Request $request)
     {
         $this->validate($request,[
             'name'  => [
                 'required',
                 'string',
-                'unique:a_app,name,'.$id.',id,os,'.$request->input('os'),
+                'unique:a_app,name',
                 new AdvertiseName()
             ],
-            'bundle_id'  => 'required|unique:a_app,bundle_id,'.$id.',id,os,'.$request->input('os'),
+            'bundle_id'  => 'required|unique:a_app,bundle_id',
             'description' => 'string|max:200',
             'icon_url' => 'string|max:200',
             'track_url' => 'string|required',
+            'app_id' => 'string|',
+        ]);
+        try{
+            $params = $request->all();
+            if($request->input('os') == 'ios'){
+                if (strlen($request->input('app_id')) > 10 || strlen($request->input('app_id')) < 8){
+                    return $this->fail(1001, [], 'app_id is wrong');
+                }else{
+                    $params['app_id'] = 'id'.$params['app_id'];
+                }
+                
+            }
+            $params['id'] = null;
+            App::Make(Auth::user(), $params);
+            return $this->success();
+        } catch(\Exception $ex){
+            return $this->fail(1001, [], $ex->getMessage());
+        }
+    }
+
+    public function update(Request $request, $id)
+    {
+        $this->validate($request,[
+            'name'  => [
+                'required',
+                'string',
+                'unique:a_app,name,'.$id.',id',
+                new AdvertiseName()
+            ],
+            'description' => 'string|max:200',
+            'icon_url' => 'string|max:200',
+            'track_url' => 'string',
             'app_id' => 'string|',
         ]);
         try{

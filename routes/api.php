@@ -62,8 +62,8 @@ Route::group(['middleware' => [
             Route::get('list', 'AppController@index')->name('advertise.app');
             Route::get('tag', 'AppController@tags')->name('advertise.app.tag');
             //.tag编辑;
-            Route::post('{id?}', 'AppController@save')->name('advertise.app.save')->middleware('permission:advertise.app.edit')
-                ->where('id', '\d+');
+            Route::post('', 'AppController@save')->name('advertise.app.save')->middleware('permission:advertise.app.edit');
+            Route::post('{id}', 'AppController@update')->name('advertise.app.update')->middleware('permission:advertise.app.edit')->where('id', '\d+');
             Route::post('{id}/enable', 'AppController@enable')->name('advertise.app.enable')->middleware('permission:advertise.app.edit');
             Route::post('{id}/disable', 'AppController@disable')->name('advertise.app.disable')->middleware('permission:advertise.app.edit');
             Route::post('icon', 'AppController@uplodeIcon')->name('advertise.app.icon')->middleware('permission:advertise.app.edit');
@@ -140,14 +140,14 @@ Route::group(['middleware' => [
             'product:publish'
         ]
     ], function () {
-        Route::get('dashboard-data', 'AppController@dashboardData')->name('publish.app.dashboard.data')->middleware('permission:publish.app.dashboard');
+        Route::get('dashboard-data', 'AppController@dashboardData')->name('publish.app.dashboard.data')->middleware('permission:publish.manage');
 
         // 应用管理
         Route::group(['prefix' => 'app', 'middleware' => 'permission:publish.app'], function () {
             Route::get('data', 'AppController@data')->name('publish.app.data');
             Route::get('listdata', 'AppController@listdata')->name('publish.app.listdata');
 
-            Route::get('dashboard', 'AppController@dashboard')->name('publish.app.dashboard')->middleware('permission:publish.app.dashboard');
+            Route::get('dashboard', 'AppController@dashboard')->name('publish.app.dashboard')->middleware('permission:publish.manage');
             //编辑
             Route::get('{id?}', 'AppController@edit')->name('publish.app.edit')->middleware('permission:publish.app')
                 ->where('id', '\d+');
