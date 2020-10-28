@@ -12,8 +12,8 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
-    // return redirect('/dist');
+    // return view('welcome');
+    return redirect('/dist');
 });
 
 // Route::group(['middleware' => 'web'], function () {
