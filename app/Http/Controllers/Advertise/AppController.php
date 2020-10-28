@@ -31,7 +31,7 @@ class AppController extends Controller
             $app_query->where('name', 'like', $like_keyword);
         }
         $res = $app_query->orderBy($request->get('field','status'),$request->get('order','desc'))
-            ->orderBy('name','asc')
+            ->orderBy('id','desc')
             ->paginate($request->get('limit',30));
 
         return $this->success($res);
