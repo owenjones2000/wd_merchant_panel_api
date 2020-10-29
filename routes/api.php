@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 Route::post('auth/login', 'AuthController@login');
+Route::post('auth/logout', 'AuthController@logout');
 Route::group(['middleware' => [
     'api',
     'refresh',
@@ -29,7 +30,6 @@ Route::group(['middleware' => [
         'auth:api',
     ]], function () {
         Route::get('auth/user', 'AuthController@user');
-        Route::post('auth/logout', 'AuthController@logout');
     });
 
 
