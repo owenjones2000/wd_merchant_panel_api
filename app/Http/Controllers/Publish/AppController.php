@@ -31,7 +31,7 @@ class AppController extends Controller
             $platform  = $request->get('platform');
             $channel_base_query->where('platform', $platform);
         }
-        $channel_list = $channel_base_query->paginate($request->get('limit', 30));
+        $channel_list = $channel_base_query->orderBy('id', 'desc')->paginate($request->get('limit', 30));
         return $this->success($channel_list);
     }
     public function data(Request $request)
