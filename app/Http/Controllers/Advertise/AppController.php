@@ -159,6 +159,9 @@ class AppController extends Controller
      */
     public function uplodeIcon(Request $request)
     {
+        $this->validate($request, [
+            'file' => 'required|file|max:200'
+        ]);
         //返回信息json
         $file = $request->file('file');
 

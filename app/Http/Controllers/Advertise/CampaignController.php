@@ -323,6 +323,7 @@ class CampaignController extends Controller
             'name',
             'os'
         ])
+        ->orderBy('name')
             ->get();
         return $this->success($apps);
     }
