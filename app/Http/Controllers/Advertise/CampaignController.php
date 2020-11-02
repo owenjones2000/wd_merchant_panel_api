@@ -336,7 +336,7 @@ class CampaignController extends Controller
 
     public function states()
     {
-        $states = State::query()->select('id', 'code')->orderBy('sort', 'desc')->get();
+        $states = State::query()->select('id', 'code')->orderBy('sort', 'desc')->orderBy('code', 'asc')->get();
         return $this->success($states);
     }
     /**

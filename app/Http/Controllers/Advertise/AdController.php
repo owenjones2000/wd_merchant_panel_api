@@ -10,6 +10,8 @@ use App\Rules\AdvertiseName;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Advertise\AdTag;
+use App\Models\Advertise\AdType;
+use App\Models\Advertise\AssetType;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -162,6 +164,29 @@ class AdController extends Controller
         return $this->success($tags);
     }
 
+    public function type()
+    {
+        $type = AdType::$list;
+        foreach ($type as  &$adtype) {
+            foreach ($adtype['need_asset_type'] as $key => $needtype) {
+                if (is_array($needtype)) {
+                    $name = [];
+                    foreach ($needtype as $astype) {
+                        $name[] = AssetType::get($astype)['name'];  
+                    }
+                    $adtype['need_asset_type'][$key] = implode(' or ', $name);
+                }else {
+                    $adtype['need_asset_type'][$key]  = AssetType::get($needtype)['name'];
+                }
+            }
+        }
+        return $this->success(array_values($type));
+    }
+    public function assettype()
+    {
+        $type = AssetType::$list;
+        return $this->success($type);
+    }
     /**
      * 启动
      * @param $id

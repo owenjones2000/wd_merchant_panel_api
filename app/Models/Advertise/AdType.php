@@ -38,56 +38,69 @@ class AdType
             'id' => self::Video_Landscape_Short,
             'name' => 'Landscape - Under 15s',
             'support_asset_type' => [
-                AssetType::Landscape_Short, AssetType::Landscape_Interstitial_Image,
+                AssetType::Landscape_Short,
+                AssetType::Landscape_Interstitial_Image,
                 AssetType::Html,
                 AssetType::Playable_Html,
             ],
-            'need_asset_type' => [AssetType::Landscape_Short, [
-                AssetType::Landscape_Interstitial_Image,
-                AssetType::Playable_Html,
-                AssetType::Html
-            ]],
+            'need_asset_type' => [
+                AssetType::Landscape_Short, [
+                    AssetType::Landscape_Interstitial_Image,
+                    AssetType::Playable_Html,
+                    AssetType::Html
+                ]
+            ],
         ],
         self::Video_Landscape_Long => [
             'id' => self::Video_Landscape_Long,
             'name' => 'Landscape - Over 15s',
             'support_asset_type' => [
-                AssetType::Landscape_Long, AssetType::Landscape_Interstitial_Image,
-                AssetType::Playable_Html,
-                AssetType::Html
-            ],
-            'need_asset_type' => [AssetType::Landscape_Long, [
+                AssetType::Landscape_Long,
                 AssetType::Landscape_Interstitial_Image,
                 AssetType::Playable_Html,
                 AssetType::Html
-            ]],
+            ],
+            'need_asset_type' => [
+                AssetType::Landscape_Long, [
+                    AssetType::Landscape_Interstitial_Image,
+                    AssetType::Playable_Html,
+                    AssetType::Html
+                ]
+            ],
         ],
         self::Video_Portrait_Short => [
             'id' => self::Video_Portrait_Short,
             'name' => 'Portrait - Under 15s',
             'support_asset_type' => [
-                AssetType::Portrait_Short, AssetType::Portrait_Interstitial_Image,
-                AssetType::Html
-            ],
-            'need_asset_type' => [AssetType::Portrait_Short, [
+                AssetType::Portrait_Short,
                 AssetType::Portrait_Interstitial_Image,
                 AssetType::Playable_Html,
                 AssetType::Html
-            ]],
+            ],
+            'need_asset_type' => [
+                AssetType::Portrait_Short, [
+                    AssetType::Portrait_Interstitial_Image,
+                    AssetType::Playable_Html,
+                    AssetType::Html
+                ]
+            ],
         ],
         self::Video_Portrait_Long => [
             'id' => self::Video_Portrait_Long,
             'name' => 'Portrait - Over 15s',
             'support_asset_type' => [
-                AssetType::Portrait_Long, AssetType::Portrait_Interstitial_Image,
+                AssetType::Portrait_Long,
+                AssetType::Portrait_Interstitial_Image,
                 AssetType::Playable_Html,
                 AssetType::Html
             ],
-            'need_asset_type' => [AssetType::Portrait_Long, [
-                AssetType::Portrait_Interstitial_Image,
-                AssetType::Playable_Html,  
-                AssetType::Html
-            ]],
+            'need_asset_type' => [
+                AssetType::Portrait_Long, [
+                    AssetType::Portrait_Interstitial_Image,
+                    AssetType::Playable_Html,
+                    AssetType::Html
+                ]
+            ],
         ],
     ];
 }

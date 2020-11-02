@@ -40,7 +40,7 @@ class AuthController extends Controller
             )->header('Authorization', $token);
         }
 
-        return response()->json(new JsonResponse([], 'login_error'), Response::HTTP_UNAUTHORIZED);
+        return $this->fail(1000, [], 'login error');
     }
 
     public function logout()
