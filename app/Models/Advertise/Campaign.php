@@ -126,7 +126,7 @@ class Campaign extends Model
             }
 
             return $campaign;
-        }, 3);
+        });
         return $campaign;
     }
 

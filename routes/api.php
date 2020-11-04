@@ -98,6 +98,8 @@ Route::group(['middleware' => [
             // 广告
             Route::group(['prefix' => '{campaign_id}/ad', 'middleware' => 'permission:advertise.campaign.ad'], function () {
                 Route::get('data', 'AdController@data')->name('advertise.campaign.ad.data');
+                Route::get('type', 'AdController@type')->name('advertise.campaign.ad.type');
+                Route::get('assettype', 'AdController@assettype')->name('advertise.campaign.ad.assettype');
                 //编辑
                 Route::post('{id?}', 'AdController@save')->name('advertise.campaign.ad.save')->middleware('permission:advertise.campaign.ad.edit');
                 Route::post('{id}/enable', 'AdController@enable')->name('advertise.ad.enable')->middleware('permission:advertise.campaign.ad.edit');
@@ -111,8 +113,8 @@ Route::group(['middleware' => [
             // 子渠道
             Route::group(['prefix' => '{campaign_id}/channel', 'middleware' => 'permission:advertise.campaign'], function () {
                 Route::get('data', 'ChannelController@data')->name('advertise.campaign.channel.data');
-                Route::post('{channel_id}/enable', 'ChannelController@enable')->name('advertise.campaign.channel.v2.enable');
-                Route::post('{channel_id}/disable', 'ChannelController@disable')->name('advertise.campaign.channel.v2.disable');
+                Route::post('{channel_id}/enable', 'ChannelController@enable')->name('advertise.campaign.channel.v2.enable')->middleware('permission:advertise.campaign.edit');
+                Route::post('{channel_id}/disable', 'ChannelController@disable')->name('advertise.campaign.channel.v2.disable')->middleware('permission:advertise.campaign.edit');
             });
 
             // 区域
