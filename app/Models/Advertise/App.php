@@ -2,7 +2,6 @@
 
 namespace App\Models\Advertise;
 
-use App\Exceptions\BizException;
 use App\Scopes\TenantScope;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
@@ -42,7 +41,7 @@ class App extends Model
                 $apps->is_admin_disable = true;
                 $apps['status'] = false;
                 if ($params['track_platform_id'] == TrackPlatform::Adjust && empty($params['track_code'])) {
-                    throw new BizException('Track code required.');
+                    throw new \Exception('Track code required.');
                 }
             } else {
                 $apps = self::query()->where([
