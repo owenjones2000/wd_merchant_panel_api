@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class AuthController
@@ -31,6 +32,7 @@ class AuthController extends Controller
     {
         $credentials = $request->only('email', 'password');
         if ($token = $this->guard()->attempt($credentials)) {
+            Log::info('login user' . Auth::user()['realname']);
             return response()->json(
                 [
                     'code' => 0,
