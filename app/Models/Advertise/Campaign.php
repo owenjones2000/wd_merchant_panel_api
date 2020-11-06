@@ -186,8 +186,8 @@ class Campaign extends Model
                 $asset_id_list = array_column($params['asset'], 'type', 'id');
                 $ad->assets()
                     ->where(function ($query) use ($ad, $asset_id_list) {
-                        $query->whereNotIn('id', array_keys($asset_id_list))
-                            ->orWhereNotIn('type_id', $ad['type']['support_asset_type']);
+                        $query->whereNotIn('id', array_keys($asset_id_list));
+                            // ->orWhereNotIn('type_id', $ad['type']['support_asset_type']);
                     })
                     ->update([
                         'ad_id' => null
