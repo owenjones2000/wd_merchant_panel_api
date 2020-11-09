@@ -29,7 +29,7 @@ class OperationLog
                 'ip' => isset($_SERVER["HTTP_X_FORWARDED_FOR"]) ? $_SERVER["HTTP_X_FORWARDED_FOR"] : $request->getClientIp(),
                 'method' => $request->method(),
                 'uri' => $request->path(),
-                'query' => http_build_query($request->except(['password','_token'])),
+                'query' => 'V2'.http_build_query($request->except(['password','_token'])),
             ];
             \App\Models\OperationLog::create($data);
         }
