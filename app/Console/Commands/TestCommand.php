@@ -144,16 +144,9 @@ class TestCommand extends Command
     public function test7()
     {
 
-        // $lock = Cache::lock('orderid');
-        // dump(time());
-        // // dd($lock->get());
-        // if (!$lock->get()) {
-        //     // 获取锁定10秒...
-        //     throw new \Exception("请勿重复提交");
-
-
-        // }
-        // sleep(10);
-        // $lock->release();
+        Cache::lock('foo')->get(function () {
+            // 获取无限期锁并自动释放...
+            sleep(10);
+        });
     }
 }

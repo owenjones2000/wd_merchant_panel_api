@@ -15,6 +15,11 @@ class App extends Model
 
     protected $table = 'a_app';
     protected $appends = ['track'];
+    const  App_Type_Shop = 1;
+    const  App_Type_Apk = 2;
+    protected $casts =  [
+        'extra_data' => 'array',
+    ];
 
     protected $fillable = [
         'name', 'description',
@@ -23,6 +28,7 @@ class App extends Model
         'track_platform_id', 'track_code', 'track_url',
         'status',
         'app_id',
+        'extra_data'
     ];
 
     /**
@@ -35,6 +41,9 @@ class App extends Model
     {
         $apps = DB::transaction(function () use ($user, $params) {
             $main_user_id = $user->getMainId();
+            // if (isset($params['type']) && $params['type']  == 1){
+                
+            // }
             if (empty($params['id'])) {
                 $apps = new self();
                 $apps->main_user_id = $main_user_id;
