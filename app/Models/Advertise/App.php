@@ -57,6 +57,12 @@ class App extends Model
                     'id' => $params['id'],
                     'main_user_id' => $main_user_id
                 ])->firstOrFail();
+                unset(
+                    $params['extra_data']['land_page'], 
+                    $params['extra_data']['apk_page'], 
+                    $params['type']
+                );
+                $params['extra_data'] = array_merge($apps->extra_data, $params['extra_data']);
             }
             
             $apps->fill($params);
