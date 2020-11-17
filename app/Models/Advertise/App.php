@@ -28,6 +28,7 @@ class App extends Model
         'track_platform_id', 'track_code', 'track_url',
         'status',
         'app_id',
+        'type',
         'extra_data'
     ];
 
