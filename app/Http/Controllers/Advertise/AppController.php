@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Advertise\AppTag;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class AppController extends Controller
@@ -172,6 +173,47 @@ class AppController extends Controller
             }
             $main_id = Auth::user()->getMainId();
             $dir = "icon/{$main_id}";
+            $file_name = date('Ymd').time().uniqid().".".$file->getClientOriginalExtension();
+            $path = Storage::putFileAs($dir, $file, $file_name);
+
+            if($path){
+                $data = [
+                    'code'  => 0,
+                    'msg'   => '上传成功',
+                    'url' => Storage::url($path),
+                ];
+            }else{
+                $data['msg'] = $file->getErrorMessage();
+            }
+            return response()->json($data);
+        }catch (\Exception $ex){
+            $data = [
+                'code'=>1,
+                'msg'=>$ex->getMessage()
+            ];
+            return response()->json($data);
+        }
+    }
+
+    public function uplodeApk(Request $request)
+    {
+        $this->validate($request, [
+            // 'file' => 'required|file|max:200'
+            'file' => 'required|file'
+        ]);
+        //返回信息json
+        $file = $request->file('file');
+        $ext = $file->getClientOriginalExtension();
+        Log::info('extension--'. $ext);
+        try{
+            if (!$file->isValid()){
+                throw new \Exception($file->getErrorMessage());
+            }
+            if ($ext != 'apk') {
+                return $this->fail(1005, [], 'wrong format');
+            }
+            $main_id = Auth::user()->getMainId();
+            $dir = "apk/{$main_id}";
             $file_name = date('Ymd').time().uniqid().".".$file->getClientOriginalExtension();
             $path = Storage::putFileAs($dir, $file, $file_name);
 

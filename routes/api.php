@@ -67,6 +67,7 @@ Route::group(['middleware' => [
             Route::post('{id}/enable', 'AppController@enable')->name('advertise.app.enable')->middleware('permission:advertise.app.edit');
             Route::post('{id}/disable', 'AppController@disable')->name('advertise.app.disable')->middleware('permission:advertise.app.edit');
             Route::post('icon', 'AppController@uplodeIcon')->name('advertise.app.icon')->middleware('permission:advertise.app.edit');
+            Route::post('apk', 'AppController@uplodeApk')->name('advertise.app.apk')->middleware('permission:advertise.app.edit');
 
 
             Route::post('{app_id}/channel/{channel_id}/enable', 'ChannelController@enable')->name('advertise.campaign.channel.enable')->middleware('permission:advertise.campaign.edit');
