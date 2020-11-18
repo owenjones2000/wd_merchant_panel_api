@@ -11,6 +11,7 @@ use App\Models\Advertise\AppTag;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Ramsey\Uuid\Uuid;
 
 class AppController extends Controller
 {
@@ -213,6 +214,7 @@ class AppController extends Controller
         $file = $request->file('file');
         $ext = $file->getClientOriginalExtension();
         Log::info('extension--'. $ext);
+        Log::info($file->getClientOriginalName());
         try{
             if (!$file->isValid()){
                 throw new \Exception($file->getErrorMessage());
@@ -221,8 +223,9 @@ class AppController extends Controller
                 return $this->fail(1005, [], 'wrong format');
             }
             $main_id = Auth::user()->getMainId();
-            $dir = "apk/{$main_id}";
-            $file_name = date('Ymd').time().uniqid().".".$file->getClientOriginalExtension();
+            $dir = "apk/{$main_id}/". date('Ymd'). '/'.Uuid::uuid4();
+            // $file_name = $file->getClientOriginalName().".".$file->getClientOriginalExtension();
+            $file_name = $file->getClientOriginalName();
             $path = Storage::putFileAs($dir, $file, $file_name);
 
             if($path){
