@@ -146,7 +146,15 @@ class AppController extends Controller
                 
             }
             $params['id'] = $id;
-            App::Make(Auth::user(), $params);
+            $app = App::Make(Auth::user(), $params);
+            // $string = view('advertise.app.list')->__toString();
+            // $string = view('advertise.app.list')->render();
+            // $dir = 'html/';
+            // $file_name  = 'app-test.html';
+            // dd($string);
+            // dump($upload = Storage::put($dir . $file_name, $string));
+            // dd($url = Storage::url($dir . $file_name));
+            // dump($app);
             return $this->success();
         } catch(\Exception $ex){
             return $this->fail(1001, [], $ex->getMessage());

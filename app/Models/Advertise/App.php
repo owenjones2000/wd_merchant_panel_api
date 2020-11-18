@@ -63,7 +63,13 @@ class App extends Model
                     $params['extra_data']['apk_page'], 
                     $params['type']
                 );
-                $params['extra_data'] = array_merge($apps->extra_data, $params['extra_data']);
+
+                if (isset($params['type']) && $params['type']  == 1){
+                    $params['extra_data'] = array_merge($apps->extra_data, $params['extra_data']);
+                }else {
+                    unset($params['extra_data']);
+                }
+                
             }
             
             $apps->fill($params);
@@ -74,7 +80,7 @@ class App extends Model
                 $apps->tags()->sync($tags);
             }
             return $apps;
-        }, 3);
+        });
         return $apps;
     }
 
