@@ -144,9 +144,7 @@ class TestCommand extends Command
     public function test7()
     {
 
-        Cache::lock('foo')->get(function () {
-            // 获取无限期锁并自动释放...
-            sleep(10);
-        });
+        $res = hash('sha1', time()) % 256;
+        dd($res);
     }
 }
