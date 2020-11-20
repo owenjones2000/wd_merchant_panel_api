@@ -95,10 +95,24 @@ class AppController extends Controller
             'name'  => [
                 'required',
                 'string',
-                'unique:a_app,name',
+                // 'unique:a_app,name',
+                function ($attribute, $value, $fail) use ($request){
+                    $taken = App::where('name', $value)->where('os', $request->input('os'))->first();
+                    if ($taken) {
+                        $fail($attribute.' has been taken.');
+                    }
+                },
                 new AdvertiseName()
             ],
-            'bundle_id'  => 'required|unique:a_app,bundle_id',
+            'bundle_id'  => [
+                'required',
+                function ($attribute, $value, $fail) use ($request) {
+                    $taken = App::where('bundle_id', $value)->where('os', $request->input('os'))->first();
+                    if ($taken) {
+                        $fail($attribute . ' has been taken.');
+                    }
+                },
+            ],
             'description' => 'string|max:200',
             'icon_url' => 'string|max:200',
             'track_url' => 'string|required',
@@ -128,7 +142,14 @@ class AppController extends Controller
             'name'  => [
                 'required',
                 'string',
-                'unique:a_app,name,'.$id.',id',
+                // 'unique:a_app,name,'.$id.',id',
+                function ($attribute, $value, $fail) use ($request, $id) {
+                    $taken = App::where('name', $value)->where('os', $request->input('os'))
+                    ->where('id','<>', $id)->first();
+                    if ($taken) {
+                        $fail($attribute . ' has been taken.');
+                    }
+                },
                 new AdvertiseName()
             ],
             'description' => 'string|max:200',
