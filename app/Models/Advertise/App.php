@@ -15,8 +15,9 @@ class App extends Model
 
     protected $table = 'a_app';
     protected $appends = ['track'];
-    const  App_Type_Shop = 1;
-    const  App_Type_Apk = 2;
+    const  App_Type_Shop = 0;
+    const  App_Type_Apk = 1;
+    const  App_Type_Samsung = 2;
     protected $casts =  [
         'extra_data' => 'array',
     ];

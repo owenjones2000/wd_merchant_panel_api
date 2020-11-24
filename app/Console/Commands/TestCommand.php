@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Advertise\Ad;
+use App\Models\Advertise\App;
 use App\User;
 use FFMpeg\FFMpeg;
 use FFMpeg\FFProbe;
@@ -144,7 +145,7 @@ class TestCommand extends Command
     public function test7()
     {
 
-        $res = hash('sha1', time()) % 256;
+        $res = App::query()->get()->pluck('id')->toArray();
         dd($res);
     }
 }
