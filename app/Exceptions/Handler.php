@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
+use Spatie\Permission\Exceptions\UnauthorizedException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 
 class Handler extends ExceptionHandler
@@ -63,7 +64,13 @@ class Handler extends ExceptionHandler
                 'code' => 422,
                 'message' => 'Form data error',
                 'data' => $exception->errors()
-            ]);
+            ],422);
+        }
+        if ($exception instanceof UnauthorizedException) {
+            return response()->json([
+                'code' => 403,
+                'message' => 'no permission',
+            ],403);
         }
         return parent::render($request, $exception);
     }
