@@ -239,7 +239,7 @@ class AppController extends Controller
             ->toArray();
         foreach ($advertise_kpi_list as $key => &$kpi) {
             $kpi['revenue'] = round($impression_cpm[$kpi['date']]['cpm'] ?? 0);
-            $kpi['ecpm'] = round($kpi['revenue'] * 1000 / $kpi['impressions'] ?: 1, 2);
+            $kpi['ecpm'] = round($kpi['revenue'] * 1000 / ($kpi['impressions'] ?: 1), 2);
         }
         if ($range_date == 'now') {
             $result = $advertise_kpi_list[count($advertise_kpi_list) - 1] ?? [];
