@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class App extends Model
 {
@@ -32,6 +33,7 @@ class App extends Model
         'status',
         'app_id',
         'type',
+        'is_agency',
         'extra_data'
     ];
 
@@ -45,9 +47,8 @@ class App extends Model
     {
         $apps = DB::transaction(function () use ($user, $params) {
             $main_user_id = $user->getMainId();
-            // if (isset($params['type']) && $params['type']  == 1){
-                
-            // }
+            // Log::info($user);
+            // Log::info($user->currentMainUser );
             if (empty($params['id'])) {
                 $apps = new self();
                 $apps->main_user_id = $main_user_id;
@@ -74,7 +75,9 @@ class App extends Model
                 }
                 
             }
-            
+            if ($user->currentMainUser->is_agency){
+                $apps->is_agency = 1;
+            }
             $apps->fill($params);
             $apps->saveOrFail();
             $tags = [];
