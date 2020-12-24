@@ -61,10 +61,13 @@ class Handler extends ExceptionHandler
         }
         if ($exception instanceof ValidationException) {
             $errorMessage = array_values($exception->errors());
-            
+            // return response()->json([
+            //     'code' => 422,
+            //     'message' => implode(',', array_column($errorMessage, 0)),
+            // ],422);
             return response()->json([
                 'code' => 422,
-                'message' => implode(',', $errorMessage),
+                'message' => $errorMessage[0][0],
             ],422);
         }
         if ($exception instanceof UnauthorizedException) {
