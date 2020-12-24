@@ -60,10 +60,11 @@ class Handler extends ExceptionHandler
             return response()->json(['error' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
         }
         if ($exception instanceof ValidationException) {
+            $errorMessage = array_values($exception->errors());
+            
             return response()->json([
                 'code' => 422,
-                'message' => 'Form data error',
-                'data' => $exception->errors()
+                'message' => implode(',', $errorMessage),
             ],422);
         }
         if ($exception instanceof UnauthorizedException) {
