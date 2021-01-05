@@ -8,6 +8,7 @@ use App\Rules\AdvertiseName;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Advertise\AppTag;
+use App\Models\Advertise\TrackPlatform;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -116,6 +117,8 @@ class AppController extends Controller
             'description' => 'string|max:200',
             'icon_url' => 'string|max:200',
             'track_url' => 'string|required',
+            'track_platform_id' => 'numeric|required',
+            'track_code' => 'string|required',
             'app_id' => 'string|',
         ]);
         try{
@@ -128,11 +131,36 @@ class AppController extends Controller
                 }
                 
             }
+            $this->checkTrackurl($params);
             $params['id'] = null;
             App::Make(Auth::user(), $params);
             return $this->success();
         } catch(\Exception $ex){
             return $this->fail(1001, [], $ex->getMessage());
+        }
+    }
+
+    public function checkTrackurl($params)
+    {
+        switch ($params['track_platform_id']) {
+            case TrackPlatform::AppsFlyer:
+                if(strpos($params['track_url'], "app.appsflyer.com/{$params['track_code']}") === false){
+                    throw new \Exception("Error track url", 1000);
+                }
+                break;
+            case TrackPlatform::Adjust:
+                if (strpos($params['track_url'], "adjust.com/{$params['track_code']}") === false) {
+                    throw new \Exception("Error track url", 1000);
+                }
+                break;
+            case TrackPlatform::Kochava:
+                if (strpos($params['track_url'], "control.kochava.com/v1/cpi/click") === false) {
+                    throw new \Exception("Error track url", 1000);
+                }
+                break;
+            default:
+                throw new \Exception("Error track url", 1000);
+                break;
         }
     }
 
