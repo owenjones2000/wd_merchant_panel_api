@@ -21,20 +21,20 @@ class AssetController extends Controller
         //返回信息json
         $file = $request->file('file');
 
-        try{
-            if (!$file->isValid()){
+        try {
+            if (!$file->isValid()) {
                 throw new \Exception($file->getErrorMessage());
             }
             $file_info = AssetType::decide($file);
             $ad_type = AdType::get($request->input('ad_type_id', null));
-            if($ad_type != null){
-                if(!in_array($file_info['type'], $ad_type['support_asset_type'])){
+            if ($ad_type != null) {
+                if (!in_array($file_info['type'], $ad_type['support_asset_type'])) {
                     throw new \Exception('file type not support by ad.');
                 }
             }
             $main_id = Auth::user()->getMainId();
             $dir = "asset/{$main_id}";
-            $file_name = date('Ymd').time().uniqid().".".$file->getClientOriginalExtension();
+            $file_name = date('Ymd') . time() . uniqid() . "." . $file->getClientOriginalExtension();
             $path = Storage::putFileAs($dir, $file, $file_name);
             Storage::disk('local')->putFileAs($dir, $file, $file_name);
 
@@ -43,30 +43,31 @@ class AssetController extends Controller
                 'file_path' => $path,
                 'hash' => md5_file($file),
                 'type_id' => $file_info['type'],
-                'spec' => $file_info
+                'spec' => $file_info,
+                'width' => $file_info['width'] ?? 0,
+                'height' => $file_info['height'] ?? 0,
+                'duration' => $file_info['duration'] ?? 0,
             ]);
             // dispatch(new CompressVideo($asset));
             $asset['type_group_key'] = AdType::getAssetTypeGroupKey($ad_type['id'], $file_info['type']);
             $asset['type'] = AssetType::get($asset['type_id']);
 
-            if($path){
+            if ($path) {
                 $data = [
                     'code'  => 0,
                     'msg'   => '上传成功',
                     'asset' => $asset,
                 ];
-            }else{
+            } else {
                 $data['msg'] = $file->getErrorMessage();
             }
             return response()->json($data);
-        }catch (\Exception $ex){
+        } catch (\Exception $ex) {
             $data = [
-                'code'=>1,
-                'msg'=>$ex->getMessage()
+                'code' => 1,
+                'msg' => $ex->getMessage()
             ];
             return response()->json($data);
         }
     }
-
-
 }
