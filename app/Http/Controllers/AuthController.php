@@ -54,7 +54,12 @@ class AuthController extends Controller
     public function user()
     {
         $user = Auth::user();
-        return new UserResource($user);
+        return response()->json(
+            [
+                'code' => 0,
+                'data' => new UserResource($user)
+            ]
+        );
     }
 
     /**
